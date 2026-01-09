@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { fetchBooks } from "../api/booksApi";
 import AddBookForm from "./AddBookForm";
+import BookItem from "./BookItem";
+
 
 
 const BooksList = () => {
@@ -10,8 +12,19 @@ const BooksList = () => {
   const [error, setError] = useState(null);
 
   const handleBookAdded = (newBook) => {
-     setBooks((prev) => [newBook, ...prev]); 
+    setBooks((prev) => [newBook, ...prev]); 
   };
+
+  const handleBookUpdated = (updatedBook) => {
+    setBooks((prev) =>
+      prev.map((b) => (b.id === updatedBook.id ? updatedBook : b))
+    );
+  };
+  
+  const handleBookDeleted = (id) => {
+    setBooks((prev) => prev.filter((b) => b.id !== id));
+  };
+
 
 
   useEffect(() => {
@@ -50,13 +63,15 @@ return (
 
     <ul>
       {books.map((book) => (
-        <li key={book.id}>
-          <strong>{book.title}</strong>
-          {book.author && ` — ${book.author}`}
-          {book.rating && ` ⭐ ${book.rating}`}
-        </li>
+        <BookItem
+          key={book.id}
+          book={book}
+          onBookUpdated={handleBookUpdated}
+          onBookDeleted={handleBookDeleted}
+        />
       ))}
     </ul>
+
   </div>
 );
 };
