@@ -1,5 +1,7 @@
 import pool from "../db/index.js";
 import { validateBookPayload } from "../validators/book.validator.js";
+import { fetchCoverIdByTitle } from "../services/openLibrary.service.js";
+
 
 
 export const createBook = async (req, res) => {
@@ -8,7 +10,7 @@ export const createBook = async (req, res) => {
   if (validationError) {
     return res.status(400).json({ error: validationError });
   }
-
+  
   try {
     const {
       title,
@@ -16,8 +18,10 @@ export const createBook = async (req, res) => {
       rating,
       notes,
       date_read,
-      cover_id,
     } = req.body;
+    
+    
+    const cover_id = await fetchCoverIdByTitle(title);
 
     const result = await pool.query(
       `
