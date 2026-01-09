@@ -4,14 +4,19 @@ import pool from "./db/index.js";
 
 import booksRoutes from "./routes/books.routes.js";
 
+import cors from "cors";
+
 
 dotenv.config();
 
+
 const app = express();
+
+app.use(cors());
+
 app.use(express.json());
 
 app.use("/api/books", booksRoutes);
-
 
 const PORT = process.env.PORT || 5000;
 
