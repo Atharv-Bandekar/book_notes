@@ -1,7 +1,14 @@
 import pool from "../db/index.js";
+import { validateBookPayload } from "../validators/book.validator.js";
 
 
 export const createBook = async (req, res) => {
+
+  const validationError = validateBookPayload(req.body);
+  if (validationError) {
+    return res.status(400).json({ error: validationError });
+  }
+
   try {
     const {
       title,
@@ -11,11 +18,6 @@ export const createBook = async (req, res) => {
       date_read,
       cover_id,
     } = req.body;
-
-    // Basic validation
-    if (!title) {
-      return res.status(400).json({ error: "Title is required" });
-    }
 
     const result = await pool.query(
       `
@@ -75,8 +77,9 @@ export const updateBook = async (req, res) => {
       cover_id,
     } = req.body;
 
-    if (!title) {
-      return res.status(400).json({ error: "Title is required" });
+    const validationError = validateBookPayload(req.body);
+    if (validationError) {
+      return res.status(400).json({ error: validationError });
     }
 
     const result = await pool.query(
