@@ -8,3 +8,10 @@ export const fetchBooks = async (sort) => {
   });
   return response.data;
 };
+
+
+export const createBook = async (bookData) => {
+  const response = await axios.post(API_BASE_URL, bookData);
+  return response.data;
+};
+
