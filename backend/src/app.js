@@ -6,15 +6,35 @@ import booksRoutes from "./routes/books.routes.js";
 
 import cors from "cors";
 
+import session from "express-session";
+
+import authRoutes from "./routes/auth.routes.js";
+
 
 dotenv.config();
 
 
 const app = express();
 
-app.use(cors());
-
 app.use(express.json());
+
+app.use(
+  session({
+    name: "booknotes.sid",
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      sameSite: "lax",
+    },
+  })
+);
+
+app.use("/api/auth", authRoutes);
+
+
+app.use(cors());
 
 app.use("/api/books", booksRoutes);
 
